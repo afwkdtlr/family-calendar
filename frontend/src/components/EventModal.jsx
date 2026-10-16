@@ -13,6 +13,8 @@ const EMPTY = {
   color: EVENT_COLORS[0].id,
   familyId: "",
   isFamilyEvent: false,
+  hasAttendees: false,
+  attendeeIds: [],
 };
 
 export function EventModal({
@@ -20,6 +22,7 @@ export function EventModal({
   event,
   date,
   houseName = "우리가족",
+  people = [],
   canEdit,
   submitting,
   error,
@@ -48,6 +51,8 @@ export function EventModal({
         color: event.color,
         familyId: event.familyId ? String(event.familyId) : "",
         isFamilyEvent: Boolean(event.isFamilyEvent),
+        hasAttendees: Boolean(event.hasAttendees),
+        attendeeIds: event.attendeeIds || [],
       });
       return;
     }
@@ -75,6 +80,24 @@ export function EventModal({
         next.eventDate = value;
       }
       return next;
+    });
+  }
+
+  const allAttending = people.length > 0 && people.every((person) => form.attendeeIds.includes(person.id));
+
+  function toggleAllAttendees(checked) {
+    update("attendeeIds", checked ? people.map((person) => person.id) : []);
+  }
+
+  function toggleAttendee(personId, checked) {
+    setForm((prev) => {
+      const nextIds = new Set(prev.attendeeIds);
+      if (checked) {
+        nextIds.add(personId);
+      } else {
+        nextIds.delete(personId);
+      }
+      return { ...prev, attendeeIds: [...nextIds] };
     });
   }
 
@@ -114,6 +137,17 @@ export function EventModal({
               </div>
             </div>
             <label className="field-label">
+              <span className="split-caption">참석자</span>
+              <span className={`family-chip family-check${form.hasAttendees ? " is-active" : ""}`}>
+                <input
+                  type="checkbox"
+                  checked={form.hasAttendees}
+                  onChange={(changeEvent) => update("hasAttendees", changeEvent.target.checked)}
+                  disabled={!canEdit}
+                />
+              </span>
+            </label>
+            <label className="field-label">
               <span className="split-caption">중요일정</span>
               <span className={`family-chip family-check${form.isFamilyEvent ? " is-active" : ""}`}>
                 <input
@@ -125,6 +159,36 @@ export function EventModal({
               </span>
             </label>
           </div>
+          {form.hasAttendees && (
+            <div className="field-label">
+              참석자
+              <div className="attendee-list">
+                <label className={`attendee-check is-all${allAttending ? " is-active" : ""}`}>
+                  <input
+                    type="checkbox"
+                    checked={allAttending}
+                    onChange={(changeEvent) => toggleAllAttendees(changeEvent.target.checked)}
+                    disabled={!canEdit || people.length === 0}
+                  />
+                  모두참석
+                </label>
+                {people.map((person) => {
+                  const checked = form.attendeeIds.includes(person.id);
+                  return (
+                    <label key={person.id} className={`attendee-check${checked ? " is-active" : ""}`}>
+                      <input
+                        type="checkbox"
+                        checked={checked}
+                        onChange={(changeEvent) => toggleAttendee(person.id, changeEvent.target.checked)}
+                        disabled={!canEdit}
+                      />
+                      {person.name}
+                    </label>
+                  );
+                })}
+              </div>
+            </div>
+          )}
           <div className="field-label">
             날짜
             <div className="picker-field-row">

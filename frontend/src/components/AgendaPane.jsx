@@ -33,7 +33,7 @@ export function AgendaPane({ date, events, onAddEvent, onSelectEvent }) {
               onClick={() => onSelectEvent(event)}
             >
               <span className="agenda-bar" style={{ background: event.color }} />
-              <span>
+              <span className="day-event-body">
                 <strong>
                   {event.title}
                   {event.isFamilyEvent && <span className="family-event-tag">중요일정</span>}
@@ -49,6 +49,13 @@ export function AgendaPane({ date, events, onAddEvent, onSelectEvent }) {
                       ? `${event.startTime}${event.endTime ? ` - ${event.endTime}` : ""}`
                       : "하루 종일"}
                 </p>
+                {event.hasAttendees && event.attendees?.length > 0 && (
+                  <p className="day-attendees">
+                    {event.attendees.map((person) => (
+                      <span key={person.id} className="day-attendee">{person.name}</span>
+                    ))}
+                  </p>
+                )}
               </span>
             </button>
           ))}

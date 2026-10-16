@@ -22,7 +22,7 @@ export function postCpuAct(req, res) {
 }
 
 export function postJoin(req, res) {
-  return send(res, () => joinPvp(req.user))
+  return send(res, () => joinPvp(req.user, req.body))
 }
 
 export function postLeave(req, res) {

@@ -27,6 +27,7 @@ export function CalendarPage() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [events, setEvents] = useState([]);
   const [families, setFamilies] = useState([]);
+  const [people, setPeople] = useState([]);
   const [hiddenHouses, setHiddenHouses] = useState([]);
   const [selectedDate, setSelectedDate] = useState(toDateKey(today));
   const [compact, setCompact] = useState(false);
@@ -44,9 +45,13 @@ export function CalendarPage() {
   );
 
   async function loadData() {
-    const eventData = await apiRequest(`/events?from=${range.from}&to=${range.to}`, { token });
+    const [eventData, peopleData] = await Promise.all([
+      apiRequest(`/events?from=${range.from}&to=${range.to}`, { token }),
+      apiRequest("/events/people", { token }),
+    ]);
     setEvents(eventData.events || []);
     setFamilies(eventData.families || []);
+    setPeople(peopleData.people || []);
   }
 
   useEffect(() => {
@@ -302,6 +307,7 @@ export function CalendarPage() {
         event={editingEvent}
         date={selectedDate}
         houseName={user?.familyName || "우리가족"}
+        people={people}
         canEdit={canChangeEvent(editingEvent)}
         submitting={submitting}
         error={modalError}

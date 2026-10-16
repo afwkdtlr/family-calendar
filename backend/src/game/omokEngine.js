@@ -149,7 +149,7 @@ export function playCpu(state) {
 }
 
 export function present(state, playerId) {
-  const me = state.players.find((item) => item.id === playerId) || state.players[0]
+  const me = state.players.find((item) => Number(item.id) === Number(playerId)) || state.players[0]
   const foe = state.players.find((item) => item !== me)
   return {
     size: state.size,

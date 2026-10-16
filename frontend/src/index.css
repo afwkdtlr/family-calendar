@@ -1885,9 +1885,73 @@ a {
 
 .field-split {
   display: grid;
-  grid-template-columns: 1.85fr 0.75fr;
+  grid-template-columns: minmax(0, 1.85fr) minmax(92px, 0.75fr) minmax(92px, 0.75fr);
   gap: 10px;
   align-items: stretch;
+}
+
+.attendee-list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  min-height: 48px;
+  padding: 6px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #fff;
+}
+
+.attendee-check {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  margin: 0;
+  padding: 7px 12px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: #8d7b72;
+  font-size: 14px;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.attendee-check.is-all {
+  margin-right: 4px;
+  padding-right: 14px;
+  color: #b7a79f;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.attendee-check.is-all::after {
+  content: "";
+  position: absolute;
+  top: 8px;
+  right: 0;
+  bottom: 8px;
+  width: 1px;
+  background: var(--line);
+}
+
+.attendee-check.is-active {
+  background: var(--peach-soft);
+  color: #8a3d38;
+}
+
+.attendee-check.is-all.is-active {
+  background: transparent;
+  color: var(--accent-strong);
+}
+
+.attendee-check input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  opacity: 0;
+  pointer-events: none;
 }
 
 .field-split .family-chip {
@@ -1961,6 +2025,31 @@ a {
   border-radius: 14px;
   padding: 12px;
   cursor: pointer;
+}
+
+.day-event-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1;
+}
+
+.day-attendees {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 8px 0 0;
+}
+
+.day-attendee {
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: #f6ebe3;
+  color: #6b5344;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.6;
 }
 
 .group-admin {
@@ -2140,9 +2229,54 @@ a {
   margin: 0 0 8px;
 }
 
-.omok-lobby ul {
-  margin: 10px 0;
-  padding-left: 18px;
+.omok-notice {
+  margin: 10px 0 0;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: #fde8e4;
+  color: #8a3d38;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.omok-rooms {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.omok-room {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: #fff;
+}
+
+.omok-room strong {
+  display: block;
+  font-size: 16px;
+}
+
+.omok-room p {
+  margin: 2px 0 0;
+}
+
+.omok-room.is-mine {
+  border-color: var(--accent);
+  background: var(--peach-soft);
+}
+
+.omok-room.is-busy {
+  background: #fbf7f4;
+}
+
+.omok-room-btn {
+  padding: 8px 12px;
+  font-size: 14px;
 }
 
 .omok-actions {

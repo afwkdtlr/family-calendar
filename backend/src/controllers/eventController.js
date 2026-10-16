@@ -1,5 +1,6 @@
 import { Event } from "../models/Event.js";
 import { Family } from "../models/Family.js";
+import { User } from "../models/User.js";
 
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 const TIME_PATTERN = /^$|^([01]\d|2[0-3]):[0-5]\d$/;
@@ -49,8 +50,18 @@ function parsePayload(body) {
       endTime,
       color,
       isFamilyEvent: Boolean(body?.isFamilyEvent),
+      hasAttendees: Boolean(body?.hasAttendees),
+      attendeeIds: Array.isArray(body?.attendeeIds) ? body.attendeeIds : [],
     },
   };
+}
+
+export function listPeople(_req, res) {
+  const people = User.findApproved().map((user) => ({
+    id: user.id,
+    name: user.name,
+  }));
+  return res.json({ people });
 }
 
 export function listEvents(req, res) {

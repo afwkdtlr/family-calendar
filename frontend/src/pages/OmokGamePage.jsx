@@ -61,39 +61,55 @@ export function OmokGamePage() {
             ‹
           </button>
           <span className="header-title">오목</span>
-          <span className="header-title full">{mode === "cpu" ? "컴퓨터와 오목" : "가족이랑 오목"}</span>
+          <span className="header-title full">{mode === "cpu" ? "컴퓨터와 오목" : "같이 하는 오목"}</span>
         </div>
       </header>
       <main className="game-page omok-page">
         {error && <div className="error-banner">{error}</div>}
-        {mode === "pvp" && room?.status === "nofamily" && (
-          <p className="muted">가족이 배정된 뒤에 같이 둘 수 있습니다. 컴퓨터와는 바로 둘 수 있어요.</p>
-        )}
-        {mode === "pvp" && room?.status !== "nofamily" && !game && (
+        {mode === "pvp" && !game && (
           <section className="omok-lobby">
-            <h2>같은 가족 두 명</h2>
-            <p className="muted">먼저 들어온 사람이 흑입니다. 가로, 세로, 대각선으로 다섯 알을 이으면 이깁니다.</p>
-            <ul>
-              {(room?.players || []).map((person) => (
-                <li key={person.id}>{person.name}</li>
+            <h2>1번, 2번, 3번 방</h2>
+            <p className="muted">두 명이 같은 방에 들어오면 바로 시작되고, 먼저 들어온 사람이 흑입니다.</p>
+            {room?.notice && <p className="omok-notice">{room.notice}</p>}
+            <div className="omok-rooms">
+              {(room?.rooms || []).map((item) => (
+                <article key={item.id} className={`omok-room${item.mine ? " is-mine" : ""}${item.status === "playing" ? " is-busy" : ""}`}>
+                  <div>
+                    <strong>{item.name}</strong>
+                    <p className="muted">
+                      {item.players.length === 0
+                        ? "비어 있음"
+                        : item.status === "playing"
+                          ? `두는 중 · ${item.players.map((person) => person.name).join(", ")}`
+                          : item.mine
+                            ? "상대를 기다리는 중"
+                            : `대기 · ${item.players.map((person) => person.name).join(", ")}`}
+                    </p>
+                  </div>
+                  <div className="omok-actions">
+                    {item.open && !room?.me && (
+                      <button className="primary-btn omok-room-btn" type="button" disabled={busy} onClick={() => act("/omok/join", { roomId: item.id })}>
+                        들어가기
+                      </button>
+                    )}
+                    {item.open && room?.me && !item.mine && (
+                      <button className="ghost-btn omok-room-btn" type="button" disabled={busy} onClick={() => act("/omok/join", { roomId: item.id })}>
+                        이 방으로
+                      </button>
+                    )}
+                    {item.mine && room?.host && item.players.length === 2 && (
+                      <button className="primary-btn omok-room-btn" type="button" disabled={busy} onClick={() => act("/omok/start")}>
+                        시작
+                      </button>
+                    )}
+                    {item.mine && (
+                      <button className="ghost-btn omok-room-btn" type="button" disabled={busy} onClick={() => act("/omok/leave")}>
+                        나가기
+                      </button>
+                    )}
+                  </div>
+                </article>
               ))}
-            </ul>
-            <div className="omok-actions">
-              {!room?.me && (
-                <button className="primary-btn" type="button" disabled={busy} onClick={() => act("/omok/join")}>
-                  들어가기
-                </button>
-              )}
-              {room?.me && room.host && (
-                <button className="primary-btn" type="button" disabled={busy || room.players.length < 2} onClick={() => act("/omok/start")}>
-                  시작
-                </button>
-              )}
-              {room?.me && (
-                <button className="ghost-btn" type="button" disabled={busy} onClick={() => act("/omok/leave")}>
-                  나가기
-                </button>
-              )}
             </div>
           </section>
         )}
@@ -150,6 +166,11 @@ export function OmokGamePage() {
               {mode === "pvp" && game.phase === "done" && room?.host && (
                 <button className="primary-btn" type="button" disabled={busy} onClick={() => act("/omok/start")}>
                   다음 판
+                </button>
+              )}
+              {mode === "pvp" && (
+                <button className="ghost-btn" type="button" disabled={busy} onClick={() => act("/omok/leave")}>
+                  나가기
                 </button>
               )}
               {mode === "pvp" && game.phase === "play" && !game.myTurn && (

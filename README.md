@@ -71,7 +71,7 @@ npm run dev
 ### 게임
 
 - `/game` 목록
-- **오목**: 15줄 기본 오목. 컴퓨터와 두거나, 같은 가족 두 명이 둡니다
+- **오목**: 15줄 기본 오목. 컴퓨터와 두거나, 1·2·3번 방에서 온 가족이 같이 둡니다
 
 ### 화면
 
@@ -103,12 +103,12 @@ npm run dev
 - `PATCH /api/admin/users/:id/family`
 - `GET /api/events?from=&to=`, `POST /api/events`, `PATCH /api/events/:id`, `DELETE /api/events/:id`
 - `GET /api/omok`, `POST /api/omok/cpu/start`, `POST /api/omok/cpu/act`
-- `POST /api/omok/join|leave|start|act`
+- `POST /api/omok/join` `{ roomId }`, `POST /api/omok/leave|start|act`
 - `GET /api/covers/:file` 가족 사진 파일
 - `GET /api/health`
 
-일정 본문: `{ title, description, eventDate, endDate, startTime, endTime, color, isFamilyEvent }`  
-`isFamilyEvent`가 참이면 중요일정으로 강조된다. 올린 집은 서버가 등록자 소가족으로 정한다.  
+일정 본문: `{ title, description, eventDate, endDate, startTime, endTime, color, isFamilyEvent, hasAttendees, attendeeIds }`  
+`isFamilyEvent`가 참이면 중요일정으로 강조된다. `hasAttendees`가 참이면 `attendeeIds`가 참석자다. 올린 집은 서버가 등록자 소가족으로 정한다.  
 날짜 `YYYY-MM-DD`, 시간 `HH:MM`
 
 ## 폴더

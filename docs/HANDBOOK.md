@@ -175,7 +175,8 @@ SQL은 `models`에만 둔다.
 ### `/api/events`
 
 - `GET /?from=&to=` 또는 `?familyId=` (최종 admin)
-- `POST /` `{ title, description, eventDate, endDate, startTime, endTime, color, isFamilyEvent }`
+- `GET /people` 승인된 사람 `{ id, name }`
+- `POST /` `{ title, description, eventDate, endDate, startTime, endTime, color, isFamilyEvent, hasAttendees, attendeeIds }`
 - `familyId`는 `우리가족` 또는 자기 소가족. 최종 admin은 아무 가족
 - `PATCH /:id`, `DELETE /:id`
 
@@ -185,9 +186,10 @@ SQL은 `models`에만 둔다.
 
 - `GET /?mode=cpu|pvp`
 - `POST /cpu/start`, `POST /cpu/act` `{ x, y }`
-- `POST /join|leave|start|act` 같은 가족 두 명
+- `POST /join` `{ roomId }` 1·2·3번 방. 승인된 사람은 소가족과 상관없이 입장
+- `POST /leave|start|act` 같이 하기. 한 명이 나가면 그 판은 끝나고 방은 다시 빈다
 
-컴퓨터 판은 사용자별, 같이 하기는 가족당 하나. 메모리라 서버 재시작 시 판은 리셋. 15줄, 흑 선, 다섯 알 이상이면 승리.
+컴퓨터 판은 사용자별, 같이 하기는 1·2·3번 방이다. 두 명이 같은 방에 들어가면 바로 시작한다. 메모리라 서버 재시작 시 판은 리셋. 15줄, 흑 선, 다섯 알 이상이면 승리.
 
 ### 기타
 
@@ -202,7 +204,8 @@ SQL은 `models`에만 둔다.
 
 - `USERS`: `ID, EMAIL, PASSWORD, NAME, ROLE, STATUS, FAMILY_ID, IS_FAMILY_ADMIN, CREATED_AT`
 - `FAMILIES`: `ID, NAME, COLOR, BACKGROUND, IS_CLAN, CREATED_AT`. `IS_CLAN=1`이 `우리가족`
-- `EVENTS`: `ID, TITLE, DESCRIPTION, EVENT_DATE, END_DATE, START_TIME, END_TIME, COLOR, REMIND_MINUTES, VISIBILITY, CREATED_BY, FAMILY_ID, IS_FAMILY_EVENT, CREATED_AT, UPDATED_AT`. `IS_FAMILY_EVENT=1`이면 모두가 볼 중요 일정으로 강조한다
+- `EVENTS`: `ID, TITLE, DESCRIPTION, EVENT_DATE, END_DATE, START_TIME, END_TIME, COLOR, REMIND_MINUTES, VISIBILITY, CREATED_BY, FAMILY_ID, IS_FAMILY_EVENT, HAS_ATTENDEES, CREATED_AT, UPDATED_AT`. `IS_FAMILY_EVENT=1`이면 중요일정. `HAS_ATTENDEES=1`이면 `EVENT_ATTENDEES`에 참석자
+- `EVENT_ATTENDEES`: `EVENT_ID, USER_ID`
 - `NOTIFICATION_READS`, `PUSH_SUBSCRIPTIONS`, `GAME_SCORES` 테이블이 남아 있을 수 있으나 앱은 쓰지 않는다
 
 레거시 `GROUPS`, `TODOS` 테이블이 DB에 남아 있을 수 있으나 앱은 쓰지 않는다.
@@ -242,7 +245,7 @@ SQL은 `models`에만 둔다.
 
 - 일정이 안 보임: 우리가족/`FAMILY_ID`, 승인 여부, `from`/`to`와 `END_DATE`
 - 사진이 안 보임: `/api/covers/{BACKGROUND}`, 로그인 직후에만 환영 화면
-- 오목: 승인된 사용자. 같이 하기는 같은 가족 두 명. 서버 재시작 시 방 리셋
+- 오목: 승인된 사용자. 같이 하기는 1·2·3번 방, 소가족과 무관. 서버 재시작 시 방 리셋
 - API 실패: 4000 서버, Vite 프록시, JWT 만료
 
 DB 초기화: 서버 종료 → `family-calendar.db` 삭제 → 재시작. 관리자만 다시 생김. 커버 폴더는 따로 비울 것.
