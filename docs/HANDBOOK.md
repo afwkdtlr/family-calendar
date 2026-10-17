@@ -113,14 +113,14 @@ SQL은 `models`에만 둔다.
 
 1. 가입 기본값: `ROLE=MEMBER`, `STATUS=PENDING`
 2. PENDING/REJECTED는 JWT를 주지 않는다
-3. 캘린더·게임은 승인된 사용자만. 알림·웹 푸시는 없다
+3. 캘린더·게임은 승인된 사용자만. 웹 푸시는 참석자에 넣었을 때만 울린다. 알림 이력은 없다
 4. 최종 관리자 = `USERS.ROLE = ADMIN`
 5. 가족 그룹장 = `MEMBER` + `IS_FAMILY_ADMIN` + 소가족 `FAMILY_ID`
 6. 승인된 사람은 우리가족 일정을 모두 본다. `EVENTS.FAMILY_ID`는 올린 사람의 소가족(규진이네, 장식이네) 표시다
 7. 수정/삭제: 작성자, 최종 관리자, 그 소가족 그룹장. 우리가족 일정은 그룹장이 고치지 못함
 8. 가족 사진은 로그인 환영용. 캘린더 배경으로 쓰지 않음
 9. 사진 교체·가족 삭제 시 커버 파일 삭제. 가족당 파일 하나
-10. 할 일, 주간 캘린더, 알림, 푸시는 제거됨. 다시 넣지 말 것
+10. 할 일, 주간 캘린더는 제거됨. 다시 넣지 말 것. 웹 푸시는 참석자만, 이력 화면은 없음
 11. 디자인: 연한 크림/분홍, 반응형. `alert`/`confirm` 대신 `AlertContext`
 12. Java/JDK 설정 변경 금지
 
@@ -182,6 +182,14 @@ SQL은 `models`에만 둔다.
 
 기간 조회는 `EVENT_DATE <= to` 그리고 `END_DATE >= from`. 구성원은 우리가족 일정과 소가족 일정을 같이 받는다.
 
+일정을 만들거나 고칠 때, 새로 참석자에 들어간 사람에게 웹 푸시를 보낸다. 알림을 누르면 그 날짜 일정이 보이고, 수정 창은 열지 않는다.
+
+### `/api/push`
+
+- `GET /vapid` `{ publicKey }`
+- `POST /subscribe` 브라우저 구독
+- `POST /unsubscribe` `{ endpoint }`
+
 ### `/api/omok`
 
 - `GET /?mode=cpu|pvp`
@@ -206,7 +214,8 @@ SQL은 `models`에만 둔다.
 - `FAMILIES`: `ID, NAME, COLOR, BACKGROUND, IS_CLAN, CREATED_AT`. `IS_CLAN=1`이 `우리가족`
 - `EVENTS`: `ID, TITLE, DESCRIPTION, EVENT_DATE, END_DATE, START_TIME, END_TIME, COLOR, REMIND_MINUTES, VISIBILITY, CREATED_BY, FAMILY_ID, IS_FAMILY_EVENT, HAS_ATTENDEES, CREATED_AT, UPDATED_AT`. `IS_FAMILY_EVENT=1`이면 중요일정. `HAS_ATTENDEES=1`이면 `EVENT_ATTENDEES`에 참석자
 - `EVENT_ATTENDEES`: `EVENT_ID, USER_ID`
-- `NOTIFICATION_READS`, `PUSH_SUBSCRIPTIONS`, `GAME_SCORES` 테이블이 남아 있을 수 있으나 앱은 쓰지 않는다
+- `PUSH_SUBSCRIPTIONS`: `USER_ID, ENDPOINT, P256DH, AUTH, CREATED_AT`. 웹 푸시 구독
+- `NOTIFICATION_READS`, `GAME_SCORES` 테이블이 남아 있을 수 있으나 앱은 쓰지 않는다
 
 레거시 `GROUPS`, `TODOS` 테이블이 DB에 남아 있을 수 있으나 앱은 쓰지 않는다.
 
@@ -279,7 +288,7 @@ DB 초기화: 서버 종료 → `family-calendar.db` 삭제 → 재시작. 관�
 - 기록/일기
 - 반복 일정
 - 자동 테스트
-- 일정 알림, 웹 푸시, 네이티브 앱 푸시
+- 알림 이력 화면, 네이티브 앱 푸시
 
 ---
 

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { apiRequest } from "../api/client.js";
 import { BottomNav } from "../components/BottomNav.jsx";
 import { FamilyCoverField } from "../components/FamilyCoverField.jsx";
@@ -17,7 +17,7 @@ function readImage(file) {
 }
 
 export function AdminPage() {
-  const { token, isAdmin, isSuperAdmin, logout, refreshUser } = useAuth();
+  const { token, isAdmin, isSuperAdmin, refreshUser } = useAuth();
   const { confirm, toast } = useAlert();
   const navigate = useNavigate();
   const [tab, setTab] = useState("pending");
@@ -150,20 +150,8 @@ export function AdminPage() {
         <section className="admin-card">
           <div className="admin-toolbar">
             <div>
-              <h1 style={{ margin: "0 0 6px" }}>{isSuperAdmin ? "최종 관리" : "가족 관리"}</h1>
-              <p className="muted">
-                {isSuperAdmin
-                  ? "우리가족은 모두 보고, 소가족은 그 식구만 봅니다."
-                  : "소가족 가입 신청을 승인합니다."}
-              </p>
-            </div>
-            <div className="user-actions">
-              <Link className="ghost-btn chip-btn" to="/calendar" style={{ padding: "8px 12px" }}>
-                캘린더
-              </Link>
-              <button className="ghost-btn chip-btn" onClick={logout} style={{ padding: "8px 12px" }}>
-                로그아웃
-              </button>
+              <h1 style={{ margin: isSuperAdmin ? 0 : "0 0 6px" }}>{isSuperAdmin ? "관리화면" : "가족 관리"}</h1>
+              {!isSuperAdmin && <p className="muted">소가족 가입 신청을 승인합니다.</p>}
             </div>
           </div>
 

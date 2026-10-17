@@ -84,7 +84,7 @@ export function CalendarGrid({
                     <span
                       key={`e-${event.id}`}
                       className={`event-item chip${event.isFamilyEvent ? " is-family" : ""}`}
-                      style={{ "--chip-color": event.familyColor || event.color }}
+                      style={{ "--chip-color": event.color }}
                       onClick={(clickEvent) => {
                         clickEvent.stopPropagation();
                         onEventClick(event);

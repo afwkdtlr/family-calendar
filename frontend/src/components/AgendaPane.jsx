@@ -30,6 +30,7 @@ export function AgendaPane({ date, events, onAddEvent, onSelectEvent }) {
             <button
               key={`e-${event.id}`}
               className={`day-event${event.isFamilyEvent ? " is-family" : ""}`}
+              style={{ background: `color-mix(in srgb, ${event.color} 22%, #fff)` }}
               onClick={() => onSelectEvent(event)}
             >
               <span className="agenda-bar" style={{ background: event.color }} />

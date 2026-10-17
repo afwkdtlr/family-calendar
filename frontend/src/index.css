@@ -686,9 +686,7 @@ a {
 
 .event-item.chip.is-family {
   font-weight: 800;
-  color: #8a3d38;
   box-shadow: inset 3px 0 0 #d36b66;
-  background: #fde8e4;
 }
 
 .event-dot.is-family {
@@ -699,7 +697,6 @@ a {
 
 .day-event.is-family {
   border-color: #e7b0ad;
-  background: #fff7f6;
   box-shadow: inset 3px 0 0 #d36b66;
 }
 
@@ -931,6 +928,64 @@ a {
   margin-top: 16px;
   padding: 13px;
   border-radius: 999px;
+}
+
+.push-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.push-row .muted {
+  flex: 1 1 100%;
+  margin: 0;
+}
+
+.push-icon-btn {
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #fff;
+  color: var(--accent-strong);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+
+.push-icon-btn.is-active {
+  border-color: var(--accent);
+  background: var(--peach-soft);
+  box-shadow: 0 0 0 3px rgba(217, 163, 148, 0.22);
+}
+
+.push-icon-btn svg {
+  width: 22px;
+  height: 22px;
+  fill: currentColor;
+}
+
+.push-icon-btn.is-off {
+  color: #b7a79f;
+}
+
+.push-icon-btn.is-off.is-active {
+  border-color: #d8c6bc;
+  background: #f7f1ec;
+  box-shadow: 0 0 0 3px rgba(183, 167, 159, 0.22);
+}
+
+.push-icon-btn.is-off .slash {
+  fill: none;
+  stroke: #8a3d38;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+}
+
+.push-icon-btn:disabled {
+  opacity: 0.55;
 }
 
 .pending-page,

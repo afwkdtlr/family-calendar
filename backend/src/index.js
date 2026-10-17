@@ -11,6 +11,7 @@ import { authRouter } from "./routes/auth.js";
 import { adminRouter } from "./routes/admin.js";
 import { eventRouter } from "./routes/events.js";
 import { omokRouter } from "./routes/omok.js";
+import { pushRouter } from "./routes/push.js";
 import { Family } from "./models/Family.js";
 import { coversDir, ensureCoversDir, sweepOrphanCovers } from "./lib/familyCover.js";
 
@@ -43,6 +44,7 @@ app.use("/api/auth", authRouter);
 app.use("/api/admin", adminRouter);
 app.use("/api/events", eventRouter);
 app.use("/api/omok", omokRouter);
+app.use("/api/push", pushRouter);
 
 app.use("/api", (req, res) => {
   res.status(404).json({ message: "요청한 주소를 찾을 수 없습니다." });

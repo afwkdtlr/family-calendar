@@ -59,7 +59,7 @@ npm run dev
 - 일정은 시작일~종료일, 기본 시간 09:00~18:00
 - 날짜·시간은 앱 안의 달력/시계 창에서 고릅니다.
 - 작성자와 관리자(최종/그룹장)만 수정·삭제합니다.
-- 같은 가족이 새 일정을 올리면 알림이 옵니다. 브라우저 푸시도 켤 수 있습니다.
+- 참석자에 나를 넣으면 웹 푸시가 옵니다. 알림을 누르면 그 날짜 일정이 보입니다. 알림 목록은 없습니다.
 
 ### 가족 사진
 
@@ -104,6 +104,7 @@ npm run dev
 - `GET /api/events?from=&to=`, `POST /api/events`, `PATCH /api/events/:id`, `DELETE /api/events/:id`
 - `GET /api/omok`, `POST /api/omok/cpu/start`, `POST /api/omok/cpu/act`
 - `POST /api/omok/join` `{ roomId }`, `POST /api/omok/leave|start|act`
+- `GET /api/push/vapid`, `POST /api/push/subscribe`, `POST /api/push/unsubscribe`
 - `GET /api/covers/:file` 가족 사진 파일
 - `GET /api/health`
 

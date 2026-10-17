@@ -139,7 +139,7 @@ sudo systemctl restart caddy
 2. SSL/TLS 암호화 모드는 Full (strict).
 3. Always Use HTTPS를 켭니다.
 
-일정 알림과 웹 푸시는 쓰지 않습니다.
+참석자 웹 푸시는 HTTPS에서만 됩니다. 아이폰은 홈 화면에 추가한 뒤 알림을 허용해야 합니다.
 
 ## 다시 올릴 때
 

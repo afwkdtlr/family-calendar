@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { apiRequest } from "../api/client.js";
 import { AgendaPane } from "../components/AgendaPane.jsx";
 import { BottomNav } from "../components/BottomNav.jsx";
@@ -18,6 +18,7 @@ import { useAuth } from "../context/AuthContext.jsx";
 export function CalendarPage() {
   const { user, token, isAdmin, isSuperAdmin, logout } = useAuth();
   const { confirm, toast } = useAlert();
+  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const today = new Date();
   const [cursor, setCursor] = useState({
@@ -132,16 +133,52 @@ export function CalendarPage() {
   }, [compact]);
 
   useEffect(() => {
+    function onMessage(event) {
+      const url = event.data?.url;
+      if (event.data?.type === "open-event" && typeof url === "string") {
+        navigate(url);
+      }
+    }
+    navigator.serviceWorker?.addEventListener("message", onMessage);
+    return () => navigator.serviceWorker?.removeEventListener("message", onMessage);
+  }, [navigate]);
+
+  useEffect(() => {
     const date = searchParams.get("date");
-    if (!date) {
+    const eventId = Number(searchParams.get("event"));
+    if (date) {
+      const parsed = parseDateKey(date);
+      setSelectedDate(date);
+      setCompact(true);
+      setCursor({ year: parsed.getFullYear(), month: parsed.getMonth() });
+      setSearchParams({}, { replace: true });
       return;
     }
-    const parsed = parseDateKey(date);
-    setSelectedDate(date);
-    setCompact(true);
-    setCursor({ year: parsed.getFullYear(), month: parsed.getMonth() });
-    setSearchParams({}, { replace: true });
-  }, [searchParams]);
+    if (!eventId) {
+      return;
+    }
+    let cancelled = false;
+    apiRequest(`/events/${eventId}`, { token })
+      .then((data) => {
+        if (cancelled || !data.event) {
+          return;
+        }
+        const found = data.event;
+        setSelectedDate(found.eventDate);
+        setCompact(true);
+        const parsed = parseDateKey(found.eventDate);
+        setCursor({ year: parsed.getFullYear(), month: parsed.getMonth() });
+        setSearchParams({}, { replace: true });
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setSearchParams({}, { replace: true });
+        }
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [searchParams, token]);
 
   const visibleEvents = useMemo(
     () => applyVisibilityFilter(events, hiddenHouses),
@@ -242,6 +279,7 @@ export function CalendarPage() {
         open={menuOpen}
         onClose={() => setMenuOpen(false)}
         user={user}
+        token={token}
         onLogout={logout}
         families={families}
         hiddenHouses={hiddenHouses}

@@ -1,6 +1,7 @@
 import { Event } from "../models/Event.js";
 import { Family } from "../models/Family.js";
 import { User } from "../models/User.js";
+import { notifyAttendees } from "../lib/webPush.js";
 
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 const TIME_PATTERN = /^$|^([01]\d|2[0-3]):[0-5]\d$/;
@@ -120,6 +121,12 @@ export function createEvent(req, res) {
     familyId,
   });
 
+  notifyAttendees({
+    event,
+    userIds: event.attendeeIds || [],
+    actorName: req.user.name,
+  }).catch(() => {});
+
   return res.status(201).json({ event });
 }
 
@@ -138,6 +145,12 @@ export function updateEvent(req, res) {
   }
 
   const event = Event.update(current.id, parsed.value);
+  const added = (event.attendeeIds || []).filter((id) => !(current.attendeeIds || []).includes(id));
+  notifyAttendees({
+    event,
+    userIds: added,
+    actorName: req.user.name,
+  }).catch(() => {});
   return res.json({ event });
 }
 

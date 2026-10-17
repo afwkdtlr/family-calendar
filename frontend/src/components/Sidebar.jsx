@@ -1,9 +1,12 @@
+import { useEffect, useState } from "react";
+import { disablePush, enablePush, pushEnabled, pushSupported } from "../lib/push.js";
 import { useLockBody } from "../hooks/useLockBody.js";
 
 export function Sidebar({
   open,
   onClose,
   user,
+  token,
   onLogout,
   families,
   hiddenHouses,
@@ -11,6 +14,16 @@ export function Sidebar({
 }) {
   useLockBody(open);
   const houses = (families || []).filter((family) => !family.isClan);
+  const [pushBusy, setPushBusy] = useState(false);
+  const [pushHint, setPushHint] = useState("");
+  const [pushOn, setPushOn] = useState(false);
+
+  useEffect(() => {
+    if (!open || !pushSupported()) {
+      return;
+    }
+    pushEnabled().then(setPushOn).catch(() => setPushOn(false));
+  }, [open]);
 
   return (
     <>
@@ -46,6 +59,60 @@ export function Sidebar({
           );
         })}
 
+        {pushSupported() && (
+          <div className="push-row">
+            <button
+              className={`push-icon-btn${pushOn ? " is-active" : ""}`}
+              type="button"
+              disabled={pushBusy}
+              aria-label="알림 켜기"
+              aria-pressed={pushOn}
+              onClick={async () => {
+                setPushBusy(true);
+                setPushHint("");
+                try {
+                  await enablePush(token);
+                  setPushOn(true);
+                  setPushHint("알림을 켰습니다.");
+                } catch (error) {
+                  setPushHint(error.message);
+                } finally {
+                  setPushBusy(false);
+                }
+              }}
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 22a2.2 2.2 0 0 0 2.2-2.2H9.8A2.2 2.2 0 0 0 12 22Zm8-6.2V11a8 8 0 1 0-16 0v4.8L2 17.8V19h20v-1.2l-2-2Z" />
+              </svg>
+            </button>
+            <button
+              className={`push-icon-btn is-off${!pushOn ? " is-active" : ""}`}
+              type="button"
+              disabled={pushBusy}
+              aria-label="알림 끄기"
+              aria-pressed={!pushOn}
+              onClick={async () => {
+                setPushBusy(true);
+                setPushHint("");
+                try {
+                  await disablePush(token);
+                  setPushOn(false);
+                  setPushHint("알림을 껐습니다.");
+                } catch (error) {
+                  setPushHint(error.message);
+                } finally {
+                  setPushBusy(false);
+                }
+              }}
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 22a2.2 2.2 0 0 0 2.2-2.2H9.8A2.2 2.2 0 0 0 12 22Zm8-6.2V11a8 8 0 1 0-16 0v4.8L2 17.8V19h20v-1.2l-2-2Z" />
+                <path className="slash" d="M5 4.5 19.5 19.5" />
+              </svg>
+            </button>
+            {pushHint && <p className="muted">{pushHint}</p>}
+          </div>
+        )}
         <button className="ghost-btn share-btn" onClick={onLogout}>
           로그아웃
         </button>
