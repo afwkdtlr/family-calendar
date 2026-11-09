@@ -273,6 +273,13 @@ export function CalendarPage() {
     setCompact(true);
   }
 
+  function goToday() {
+    const now = new Date();
+    setCursor({ year: now.getFullYear(), month: now.getMonth() });
+    setSelectedDate(toDateKey(now));
+    setCompact(true);
+  }
+
   return (
     <div className="app-shell calendar-shell">
       <Sidebar
@@ -302,6 +309,9 @@ export function CalendarPage() {
           </button>
         </div>
         <div className="header-actions">
+          <button className="today-btn" type="button" onClick={goToday}>
+            TODAY
+          </button>
           <button className="icon-btn" onClick={() => openCreateEvent(toDateKey(new Date()))} aria-label="일정 추가">
             ＋
           </button>
