@@ -13,7 +13,21 @@ function mapFamily(row) {
     background: row.BACKGROUND || "",
     backgroundUrl: coverUrl(row.BACKGROUND),
     isClan: Boolean(row.IS_CLAN),
+    address: row.ADDRESS || "",
     createdAt: row.CREATED_AT,
+  };
+}
+
+function mapVehicle(row) {
+  if (!row) {
+    return null;
+  }
+
+  return {
+    id: row.ID,
+    familyId: row.FAMILY_ID,
+    plate: row.PLATE,
+    memo: row.MEMO || "",
   };
 }
 
@@ -91,7 +105,32 @@ export const Family = {
     }
     db.prepare("UPDATE USERS SET FAMILY_ID = NULL, IS_FAMILY_ADMIN = 0 WHERE FAMILY_ID = ?").run(Number(id));
     db.prepare("UPDATE EVENTS SET FAMILY_ID = NULL WHERE FAMILY_ID = ?").run(Number(id));
+    db.prepare("DELETE FROM FAMILY_VEHICLES WHERE FAMILY_ID = ?").run(Number(id));
     db.prepare("DELETE FROM FAMILIES WHERE ID = ?").run(Number(id));
+  },
+
+  updateAddress(id, address) {
+    db.prepare("UPDATE FAMILIES SET ADDRESS = ? WHERE ID = ?").run(address || "", Number(id));
+    return this.findById(id);
+  },
+
+  listVehicles(familyId) {
+    return db
+      .prepare("SELECT * FROM FAMILY_VEHICLES WHERE FAMILY_ID = ? ORDER BY ID ASC")
+      .all(Number(familyId))
+      .map(mapVehicle);
+  },
+
+  replaceVehicles(familyId, vehicles) {
+    db.prepare("DELETE FROM FAMILY_VEHICLES WHERE FAMILY_ID = ?").run(Number(familyId));
+    const insert = db.prepare(
+      "INSERT INTO FAMILY_VEHICLES (FAMILY_ID, PLATE, MEMO, CREATED_AT) VALUES (?, ?, ?, ?)"
+    );
+    const createdAt = new Date().toISOString();
+    for (const item of vehicles || []) {
+      insert.run(Number(familyId), item.plate, item.memo || "", createdAt);
+    }
+    return this.listVehicles(familyId);
   },
 
   countMembers(id) {

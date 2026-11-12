@@ -17,7 +17,7 @@
 - `backend/src/models` SQL
 - `backend/src/middleware` JWT, 관리자
 - `backend/src/game` 오목 규칙·방
-- `frontend/src/pages` 화면
+- `frontend/src/pages` 화면 (캘린더, 게임, 가족정보, 관리)
 - `frontend/src/components` 재사용 UI
 - `frontend/src/context` 로그인/확인창
 - `frontend/src/api/client.js` API 호출

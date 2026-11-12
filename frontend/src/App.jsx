@@ -4,6 +4,7 @@ import { GuestRoute, ProtectedRoute } from "./components/ProtectedRoute.jsx";
 import { useAuth } from "./context/AuthContext.jsx";
 import { AdminPage } from "./pages/AdminPage.jsx";
 import { CalendarPage } from "./pages/CalendarPage.jsx";
+import { FamilyInfoPage } from "./pages/FamilyInfoPage.jsx";
 import { GamePage } from "./pages/GamePage.jsx";
 import { OmokGamePage } from "./pages/OmokGamePage.jsx";
 import { LoginPage } from "./pages/LoginPage.jsx";
@@ -46,6 +47,14 @@ export default function App() {
         element={
           <ProtectedRoute>
             <GamePage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/family-info"
+        element={
+          <ProtectedRoute>
+            <FamilyInfoPage />
           </ProtectedRoute>
         }
       />

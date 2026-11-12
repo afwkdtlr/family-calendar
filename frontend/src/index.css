@@ -770,14 +770,14 @@ a {
   bottom: 0;
   z-index: 16;
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
-.bottom-nav.with-admin {
   grid-template-columns: repeat(4, minmax(0, 1fr));
   background: rgba(255, 253, 251, 0.97);
   border-top: 1px solid var(--line);
   padding: 4px 4px calc(8px + env(safe-area-inset-bottom));
+}
+
+.bottom-nav.with-admin {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
 }
 
 .nav-item {
@@ -789,6 +789,7 @@ a {
   font-size: 11px;
   min-height: 48px;
   padding: 6px 0;
+  white-space: nowrap;
 }
 
 .nav-item.active {
@@ -1105,6 +1106,106 @@ a {
 .game-pick-tag.live {
   background: #e4eedc;
   color: #5b7a55;
+}
+
+.family-info-page {
+  gap: 10px;
+}
+
+.family-info-card {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 20px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+}
+
+.family-info-card.is-editing {
+  border-color: var(--accent);
+}
+
+.family-info-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.family-info-head strong {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 17px;
+}
+
+.family-info-head .muted {
+  margin: 4px 0 0;
+  font-size: 13px;
+}
+
+.family-info-row {
+  display: grid;
+  gap: 6px;
+}
+
+.family-info-label {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.family-info-copy {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  line-height: 1.5;
+}
+
+.plate-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.plate-chip {
+  border: 1px solid var(--line);
+  background: #fff;
+  border-radius: 999px;
+  padding: 6px 12px;
+  min-height: 34px;
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.family-info-form {
+  gap: 12px;
+}
+
+.vehicle-edit-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 6px;
+  align-items: center;
+}
+
+.vehicle-edit-row input {
+  width: 100%;
+  border: 1px solid var(--line);
+  background: #fff;
+  border-radius: 14px;
+  padding: 12px;
+  outline: none;
+  font-size: 16px;
+  min-height: 48px;
 }
 
 .dodge-wrap {
@@ -2188,7 +2289,8 @@ a {
 
   .calendar-page,
   .admin-page,
-  .game-page {
+  .game-page,
+  .family-info-page {
     grid-column: 2;
     padding-bottom: 32px;
   }

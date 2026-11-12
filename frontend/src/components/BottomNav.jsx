@@ -11,6 +11,10 @@ export function BottomNav({ isAdmin, onAdd }) {
         <span className="nav-icon">🎮</span>
         게임
       </NavLink>
+      <NavLink to="/family-info" className={({ isActive }) => `nav-item ${isActive ? "active" : ""}`}>
+        <span className="nav-icon">🏠</span>
+        가족정보
+      </NavLink>
       {isAdmin && (
         <NavLink to="/admin" className={({ isActive }) => `nav-item ${isActive ? "active" : ""}`}>
           <span className="nav-icon">👤</span>

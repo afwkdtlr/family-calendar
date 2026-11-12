@@ -113,7 +113,7 @@ SQL은 `models`에만 둔다.
 
 1. 가입 기본값: `ROLE=MEMBER`, `STATUS=PENDING`
 2. PENDING/REJECTED는 JWT를 주지 않는다
-3. 캘린더·게임은 승인된 사용자만. 웹 푸시는 참석자에 넣었을 때만 울린다. 알림 이력은 없다
+3. 캘린더·게임·가족정보는 승인된 사용자만. 웹 푸시는 참석자에 넣었을 때만 울린다. 알림 이력은 없다
 4. 최종 관리자 = `USERS.ROLE = ADMIN`
 5. 가족 그룹장 = `MEMBER` + `IS_FAMILY_ADMIN` + 소가족 `FAMILY_ID`
 6. 승인된 사람은 우리가족 일정을 모두 본다. `EVENTS.FAMILY_ID`는 올린 사람의 소가족(규진이네, 장식이네) 표시다
@@ -131,6 +131,8 @@ SQL은 `models`에만 둔다.
 | 남 일정 수정 | X | X | X | 같은 가족 | O |
 | 가입 승인 | X | X | X | 자기 가족 | 전체 |
 | 가족 사진 | X | X | X | 자기 가족 | O |
+| 가족정보 보기 | X | X | O | O | O |
+| 가족정보 수정 | X | X | 자기 집 | 자기 집 | O |
 
 ---
 
@@ -144,6 +146,7 @@ SQL은 `models`에만 둔다.
 | `/calendar` | `CalendarPage.jsx` | 승인 |
 | `/game` | `GamePage.jsx` | 승인 |
 | `/game/omok` | `OmokGamePage.jsx` | 승인 |
+| `/family-info` | `FamilyInfoPage.jsx` | 승인 |
 | `/admin` | `AdminPage.jsx` | 그룹장 또는 최종 admin |
 
 로그인 직후 가족 사진이 있으면 `FamilyWelcome`이 먼저 뜬다. 화면을 누르면 캘린더.
@@ -190,6 +193,11 @@ SQL은 `models`에만 둔다.
 - `POST /subscribe` 브라우저 구독
 - `POST /unsubscribe` `{ endpoint }`
 
+### `/api/family-info`
+
+- `GET /` 소가족별 주소·차량번호·식구 이름. 승인된 사람은 모두 본다. `우리가족`은 없음
+- `PATCH /:id` `{ address, vehicles: [{ plate }] }` 자기 소가족 또는 최종 admin. 차량은 집마다 3대까지, 저장할 때 통째로 갈아끼움
+
 ### `/api/omok`
 
 - `GET /?mode=cpu|pvp`
@@ -211,7 +219,8 @@ SQL은 `models`에만 둔다.
 컬럼은 대문자 스네이크.
 
 - `USERS`: `ID, EMAIL, PASSWORD, NAME, ROLE, STATUS, FAMILY_ID, IS_FAMILY_ADMIN, CREATED_AT`
-- `FAMILIES`: `ID, NAME, COLOR, BACKGROUND, IS_CLAN, CREATED_AT`. `IS_CLAN=1`이 `우리가족`
+- `FAMILIES`: `ID, NAME, COLOR, BACKGROUND, IS_CLAN, ADDRESS, CREATED_AT`. `IS_CLAN=1`이 `우리가족`. `ADDRESS`는 소가족 방문 주소
+- `FAMILY_VEHICLES`: `ID, FAMILY_ID, PLATE, MEMO, CREATED_AT`. 소가족 차량번호
 - `EVENTS`: `ID, TITLE, DESCRIPTION, EVENT_DATE, END_DATE, START_TIME, END_TIME, COLOR, REMIND_MINUTES, VISIBILITY, CREATED_BY, FAMILY_ID, IS_FAMILY_EVENT, HAS_ATTENDEES, CREATED_AT, UPDATED_AT`. `IS_FAMILY_EVENT=1`이면 중요일정. `HAS_ATTENDEES=1`이면 `EVENT_ATTENDEES`에 참석자
 - `EVENT_ATTENDEES`: `EVENT_ID, USER_ID`
 - `PUSH_SUBSCRIPTIONS`: `USER_ID, ENDPOINT, P256DH, AUTH, CREATED_AT`. 웹 푸시 구독
@@ -280,6 +289,7 @@ DB 초기화: 서버 종료 → `family-calendar.db` 삭제 → 재시작. 관�
 - 기간 일정, 커스텀 날짜/시간 선택
 - 로그인 가족 사진, 용량 절약 교체
 - 오목 (컴퓨터 / 가족 두 명)
+- 소가족 주소·차량번호 (가족정보)
 - 앱 확인창/토스트
 - 운영 배포: `docs/DEPLOY.md`. 운영에서는 Express가 `frontend/dist`를 같이 연다
 

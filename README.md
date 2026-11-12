@@ -73,6 +73,12 @@ npm run dev
 - `/game` 목록
 - **오목**: 15줄 기본 오목. 컴퓨터와 두거나, 1·2·3번 방에서 온 가족이 같이 둡니다
 
+### 가족정보
+
+- 하단 **가족정보**에서 소가족별 주소와 차량번호를 봅니다
+- 우리 집 정보는 그 식구만 고칩니다. 최종 관리자는 모든 집 정보를 고칩니다
+- 주소·차량번호를 누르면 복사됩니다
+
 ### 화면
 
 - 연한 크림/분홍, 과하게 예쁘장하지 않게
@@ -88,9 +94,10 @@ npm run dev
 | `/calendar` | 월간 캘린더 |
 | `/game` | 게임 목록 |
 | `/game/omok` | 오목 (`?mode=cpu` 또는 `?mode=pvp`) |
+| `/family-info` | 소가족 주소·차량번호 |
 | `/admin` | 가입 승인, 가족, 배경, 구성원 |
 
-아래 메뉴: 캘린더, 게임, (관리자만) 관리, 일정 추가
+아래 메뉴: 캘린더, 게임, 가족정보, (관리자만) 관리, 일정 추가
 
 ## 주요 API
 
@@ -104,6 +111,7 @@ npm run dev
 - `GET /api/events?from=&to=`, `POST /api/events`, `PATCH /api/events/:id`, `DELETE /api/events/:id`
 - `GET /api/omok`, `POST /api/omok/cpu/start`, `POST /api/omok/cpu/act`
 - `POST /api/omok/join` `{ roomId }`, `POST /api/omok/leave|start|act`
+- `GET /api/family-info`, `PATCH /api/family-info/:id`
 - `GET /api/push/vapid`, `POST /api/push/subscribe`, `POST /api/push/unsubscribe`
 - `GET /api/covers/:file` 가족 사진 파일
 - `GET /api/health`
