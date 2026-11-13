@@ -338,6 +338,47 @@ a {
   position: relative;
 }
 
+.ptr-host {
+  position: relative;
+}
+
+.ptr-indicator {
+  position: absolute;
+  left: 50%;
+  top: calc(4px + env(safe-area-inset-top));
+  z-index: 9;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #fff;
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+  opacity: 0;
+  pointer-events: none;
+  display: grid;
+  place-items: center;
+  transform: translate(-50%, 0);
+  transition: opacity 0.16s ease;
+}
+
+.ptr-indicator span {
+  width: 12px;
+  height: 12px;
+  border: 2px solid var(--peach);
+  border-top-color: var(--accent-strong);
+  border-radius: 50%;
+}
+
+.ptr-indicator.is-busy span {
+  animation: ptr-spin 0.7s linear infinite;
+}
+
+@keyframes ptr-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .app-header {
   position: sticky;
   top: 0;

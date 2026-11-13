@@ -238,6 +238,7 @@ SQL은 `models`에만 둔다.
 ## 9. 프론트
 
 - `AlertContext`: 확인 카드, 토스트
+- 맨 위에서 아래로 당기면 그 화면 데이터를 다시 불러온다. 달력을 접은 상태에서는 달력 칸을 내리면 펼쳐지고, 헤더·일정 목록에서 내리면 새로고침
 - `AuthContext`: 로그인, `welcome` 가족 사진
 - `EventModal` + `DateTimePickers`: 커스텀 달력/시계. 기본 09:00~18:00
 - `OmokGamePage`: 컴퓨터 또는 가족 두 명, 1.2초 폴링

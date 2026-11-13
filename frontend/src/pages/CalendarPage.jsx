@@ -1,10 +1,11 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { apiRequest } from "../api/client.js";
 import { AgendaPane } from "../components/AgendaPane.jsx";
 import { BottomNav } from "../components/BottomNav.jsx";
 import { CalendarGrid } from "../components/CalendarGrid.jsx";
 import { EventModal } from "../components/EventModal.jsx";
+import { PullToRefresh } from "../components/PullToRefresh.jsx";
 import { Sidebar } from "../components/Sidebar.jsx";
 import {
   applyVisibilityFilter,
@@ -45,7 +46,7 @@ export function CalendarPage() {
     [cursor.year, cursor.month]
   );
 
-  async function loadData() {
+  const loadData = useCallback(async () => {
     const [eventData, peopleData] = await Promise.all([
       apiRequest(`/events?from=${range.from}&to=${range.to}`, { token }),
       apiRequest("/events/people", { token }),
@@ -53,13 +54,21 @@ export function CalendarPage() {
     setEvents(eventData.events || []);
     setFamilies(eventData.families || []);
     setPeople(peopleData.people || []);
-  }
+  }, [token, range.from, range.to]);
 
   useEffect(() => {
     loadData().catch((error) => {
       console.error(error);
     });
-  }, [token, range.from, range.to]);
+  }, [loadData]);
+
+  async function refreshPage() {
+    try {
+      await loadData();
+    } catch (error) {
+      toast(error.message);
+    }
+  }
 
   useEffect(() => {
     const node = dragRef.current;
@@ -281,7 +290,12 @@ export function CalendarPage() {
   }
 
   return (
-    <div className="app-shell calendar-shell">
+    <PullToRefresh
+      className="app-shell calendar-shell"
+      onRefresh={refreshPage}
+      ignoreSelector={compact ? ".calendar-block" : ""}
+      disabled={eventModalOpen || menuOpen}
+    >
       <Sidebar
         open={menuOpen}
         onClose={() => setMenuOpen(false)}
@@ -363,6 +377,6 @@ export function CalendarPage() {
         onSave={saveEvent}
         onDelete={deleteEvent}
       />
-    </div>
+    </PullToRefresh>
   );
 }

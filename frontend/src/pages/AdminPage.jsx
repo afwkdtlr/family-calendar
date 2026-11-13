@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { apiRequest } from "../api/client.js";
 import { BottomNav } from "../components/BottomNav.jsx";
+import { PullToRefresh } from "../components/PullToRefresh.jsx";
 import { FamilyCoverField } from "../components/FamilyCoverField.jsx";
 import { EVENT_COLORS } from "../constants.js";
 import { useAlert } from "../context/AlertContext.jsx";
@@ -32,8 +33,10 @@ export function AdminPage() {
   const [saving, setSaving] = useState(false);
   const [uploadingId, setUploadingId] = useState(null);
 
-  async function loadAll() {
-    setLoading(true);
+  async function loadAll(quiet = false) {
+    if (!quiet) {
+      setLoading(true);
+    }
     setError("");
     try {
       const [pendingData, memberData, familyData] = await Promise.all([
@@ -145,7 +148,7 @@ export function AdminPage() {
   }
 
   return (
-    <>
+    <PullToRefresh onRefresh={() => loadAll(true)}>
       <main className="admin-page">
         <section className="admin-card">
           <div className="admin-toolbar">
@@ -336,6 +339,6 @@ export function AdminPage() {
         </section>
       </main>
       <BottomNav isAdmin={isAdmin} onAdd={() => navigate("/calendar")} />
-    </>
+    </PullToRefresh>
   );
 }

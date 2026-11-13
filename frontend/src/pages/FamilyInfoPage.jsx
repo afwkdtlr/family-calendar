@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { apiRequest } from "../api/client.js";
 import { BottomNav } from "../components/BottomNav.jsx";
+import { PullToRefresh } from "../components/PullToRefresh.jsx";
 import { useAlert } from "../context/AlertContext.jsx";
 import { useAuth } from "../context/AuthContext.jsx";
 
@@ -22,8 +23,10 @@ export function FamilyInfoPage() {
   const [form, setForm] = useState({ address: "", vehicles: [emptyVehicle()] });
   const [saving, setSaving] = useState(false);
 
-  async function load() {
-    setLoading(true);
+  async function load(quiet = false) {
+    if (!quiet) {
+      setLoading(true);
+    }
     setError("");
     try {
       const data = await apiRequest("/family-info", { token });
@@ -82,7 +85,11 @@ export function FamilyInfoPage() {
   }
 
   return (
-    <div className="app-shell calendar-shell game-shell">
+    <PullToRefresh
+      className="app-shell calendar-shell game-shell"
+      onRefresh={() => load(true)}
+      disabled={Boolean(editingId)}
+    >
       <header className="app-header">
         <div className="month-nav">
           <span className="header-title">가족정보</span>
@@ -237,6 +244,6 @@ export function FamilyInfoPage() {
         )}
       </main>
       <BottomNav isAdmin={isAdmin} onAdd={() => navigate("/calendar")} />
-    </div>
+    </PullToRefresh>
   );
 }
