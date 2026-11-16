@@ -133,7 +133,8 @@ SQL은 `models`에만 둔다.
 | 가족 사진 | X | X | X | 자기 가족 | O |
 | 가족정보 보기 | X | X | O | O | O |
 | 가족정보 수정 | X | X | 자기 집 | 자기 집 | O |
-| 게시판 글·댓글 | X | X | O | O | O |
+| 게시판 글·댓글 쓰기 | X | X | O | O | O |
+| 게시판 글 수정·삭제 | X | X | 자기 글 | 자기 글 | O |
 
 ---
 
@@ -210,7 +211,7 @@ SQL은 `models`에만 둔다.
 - `PATCH /:postId` `{ title, body }`, `DELETE /:postId`
 - `POST /:postId/comments` `{ body }`
 - `PATCH /comments/:commentId`, `DELETE /comments/:commentId`
-- 글·댓글 수정/삭제: 작성자, 최종 admin, 작성자와 같은 소가족 그룹장
+- 글 수정/삭제: 작성자, 최종 admin. 댓글은 그 댓글 작성자 또는 최종 admin
 
 ### `/api/omok`
 

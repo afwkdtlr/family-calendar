@@ -1401,6 +1401,7 @@ a {
 .board-actions {
   display: flex;
   flex-wrap: wrap;
+  justify-content: flex-end;
   gap: 6px;
 }
 
@@ -1417,6 +1418,19 @@ a {
   padding: 10px 12px;
   border-radius: 14px;
   background: var(--peach-soft);
+}
+
+.board-comment-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 4px;
+}
+
+.board-comment-actions .chip-btn {
+  min-height: 24px;
+  padding: 2px 8px;
+  font-size: 11px;
+  line-height: 1.2;
 }
 
 .board-comment-form {

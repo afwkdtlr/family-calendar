@@ -1,5 +1,4 @@
 import { Board } from "../models/Board.js";
-import { User } from "../models/User.js";
 
 const MAX_TITLE = 80;
 const MAX_POST = 2000;
@@ -11,17 +10,7 @@ function parseId(value) {
 }
 
 function canModerate(user, authorId) {
-  if (!user) {
-    return false;
-  }
-  if (user.isSuperAdmin || Number(user.id) === Number(authorId)) {
-    return true;
-  }
-  if (!user.isFamilyAdmin || !user.familyId) {
-    return false;
-  }
-  const author = User.findById(authorId);
-  return Boolean(author && Number(author.familyId) === Number(user.familyId));
+  return Boolean(user && (user.isSuperAdmin || Number(user.id) === Number(authorId)));
 }
 
 function withFlags(user, post) {

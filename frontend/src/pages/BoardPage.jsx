@@ -330,6 +330,7 @@ export function BoardPage() {
                         type="button"
                         onClick={() => {
                           setEditing(true);
+                          setEditingCommentId(null);
                           setTitle(post.title);
                           setBody(post.body);
                         }}
@@ -343,6 +344,7 @@ export function BoardPage() {
                   )}
                 </>
               )}
+              {!editing && (
               <div className="board-comments">
                 <strong className="board-comment-label">댓글 {post.comments?.length || 0}</strong>
                 {(post.comments || []).map((comment) => (
@@ -372,7 +374,7 @@ export function BoardPage() {
                       <p className="board-post-body">{comment.body}</p>
                     )}
                     {comment.canEdit && editingCommentId !== comment.id && (
-                      <div className="board-actions">
+                      <div className="board-comment-actions">
                         <button
                           className="ghost-btn chip-btn"
                           type="button"
@@ -403,10 +405,11 @@ export function BoardPage() {
                     aria-label="댓글"
                   />
                   <button className="ghost-btn chip-btn" type="submit">
-                    댓글
+                    입력
                   </button>
                 </form>
               </div>
+              )}
             </article>
           ) : (
             <p className="empty-state">글을 찾을 수 없습니다.</p>
