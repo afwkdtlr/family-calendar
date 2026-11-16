@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { NavLink } from "react-router-dom";
 import { disablePush, enablePush, pushEnabled, pushSupported } from "../lib/push.js";
 import { useLockBody } from "../hooks/useLockBody.js";
 
@@ -114,9 +113,6 @@ export function Sidebar({
             {pushHint && <p className="muted">{pushHint}</p>}
           </div>
         )}
-        <NavLink to="/family-info" className="ghost-btn share-btn" onClick={onClose}>
-          가족정보
-        </NavLink>
         <button className="ghost-btn share-btn" onClick={onLogout}>
           로그아웃
         </button>
