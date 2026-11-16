@@ -113,7 +113,7 @@ SQL은 `models`에만 둔다.
 
 1. 가입 기본값: `ROLE=MEMBER`, `STATUS=PENDING`
 2. PENDING/REJECTED는 JWT를 주지 않는다
-3. 캘린더·게임·가족정보는 승인된 사용자만. 웹 푸시는 참석자에 넣었을 때만 울린다. 알림 이력은 없다
+3. 캘린더·게시판·가족정보는 승인된 사용자만. 게임은 주소로 그대로 들어가고 하단 메뉴에는 없다. 웹 푸시는 참석자에 넣었을 때만 울린다. 알림 이력은 없다
 4. 최종 관리자 = `USERS.ROLE = ADMIN`
 5. 가족 그룹장 = `MEMBER` + `IS_FAMILY_ADMIN` + 소가족 `FAMILY_ID`
 6. 승인된 사람은 우리가족 일정을 모두 본다. `EVENTS.FAMILY_ID`는 올린 사람의 소가족(규진이네, 장식이네) 표시다
@@ -133,6 +133,7 @@ SQL은 `models`에만 둔다.
 | 가족 사진 | X | X | X | 자기 가족 | O |
 | 가족정보 보기 | X | X | O | O | O |
 | 가족정보 수정 | X | X | 자기 집 | 자기 집 | O |
+| 게시판 글·댓글 | X | X | O | O | O |
 
 ---
 
@@ -144,8 +145,11 @@ SQL은 `models`에만 둔다.
 | `/register` | `RegisterPage.jsx` | 손님 |
 | `/pending` | `PendingPage.jsx` | 대기 |
 | `/calendar` | `CalendarPage.jsx` | 승인 |
-| `/game` | `GamePage.jsx` | 승인 |
-| `/game/omok` | `OmokGamePage.jsx` | 승인 |
+| `/game` | `GamePage.jsx` | 승인. 하단 메뉴에는 없음 |
+| `/game/omok` | `OmokGamePage.jsx` | 승인. 하단 메뉴에는 없음 |
+| `/board` | `BoardPage.jsx` | 승인. 자유게시판 목록 |
+| `/board/new` | `BoardPage.jsx` | 승인. 글쓰기 |
+| `/board/:postId` | `BoardPage.jsx` | 승인. 글 보기 |
 | `/family-info` | `FamilyInfoPage.jsx` | 승인 |
 | `/admin` | `AdminPage.jsx` | 그룹장 또는 최종 admin |
 
@@ -198,6 +202,16 @@ SQL은 `models`에만 둔다.
 - `GET /` 소가족별 주소·차량번호·식구 이름. 승인된 사람은 모두 본다. `우리가족`은 없음
 - `PATCH /:id` `{ address, vehicles: [{ plate }] }` 자기 소가족 또는 최종 admin. 차량은 집마다 3대까지, 저장할 때 통째로 갈아끼움
 
+### `/api/board`
+
+- `GET /` 글 목록 `{ id, title, authorName, createdAt, viewCount, commentCount }`
+- `POST /` `{ title, body }` 승인된 사람은 누구나 글
+- `GET /:postId` 글·댓글. 기본은 조회수 +1, `?view=0`이면 안 올림
+- `PATCH /:postId` `{ title, body }`, `DELETE /:postId`
+- `POST /:postId/comments` `{ body }`
+- `PATCH /comments/:commentId`, `DELETE /comments/:commentId`
+- 글·댓글 수정/삭제: 작성자, 최종 admin, 작성자와 같은 소가족 그룹장
+
 ### `/api/omok`
 
 - `GET /?mode=cpu|pvp`
@@ -221,6 +235,8 @@ SQL은 `models`에만 둔다.
 - `USERS`: `ID, EMAIL, PASSWORD, NAME, ROLE, STATUS, FAMILY_ID, IS_FAMILY_ADMIN, CREATED_AT`
 - `FAMILIES`: `ID, NAME, COLOR, BACKGROUND, IS_CLAN, ADDRESS, CREATED_AT`. `IS_CLAN=1`이 `우리가족`. `ADDRESS`는 소가족 방문 주소
 - `FAMILY_VEHICLES`: `ID, FAMILY_ID, PLATE, MEMO, CREATED_AT`. 소가족 차량번호
+- `BOARD_POSTS`: `ID, AUTHOR_ID, TITLE, BODY, VIEW_COUNT, CREATED_AT, UPDATED_AT`. 자유게시판 글. `BOARD_USER_ID`는 예전 사람별 게시판용으로 남아 있을 수 있음
+- `BOARD_COMMENTS`: `ID, POST_ID, AUTHOR_ID, BODY, CREATED_AT`
 - `EVENTS`: `ID, TITLE, DESCRIPTION, EVENT_DATE, END_DATE, START_TIME, END_TIME, COLOR, REMIND_MINUTES, VISIBILITY, CREATED_BY, FAMILY_ID, IS_FAMILY_EVENT, HAS_ATTENDEES, CREATED_AT, UPDATED_AT`. `IS_FAMILY_EVENT=1`이면 중요일정. `HAS_ATTENDEES=1`이면 `EVENT_ATTENDEES`에 참석자
 - `EVENT_ATTENDEES`: `EVENT_ID, USER_ID`
 - `PUSH_SUBSCRIPTIONS`: `USER_ID, ENDPOINT, P256DH, AUTH, CREATED_AT`. 웹 푸시 구독
@@ -291,6 +307,7 @@ DB 초기화: 서버 종료 → `family-calendar.db` 삭제 → 재시작. 관�
 - 로그인 가족 사진, 용량 절약 교체
 - 오목 (컴퓨터 / 가족 두 명)
 - 소가족 주소·차량번호 (가족정보)
+- 자유게시판 글·댓글. 게임은 `/game`에 남아 있고 하단 메뉴에서만 뺌
 - 앱 확인창/토스트
 - 운영 배포: `docs/DEPLOY.md`. 운영에서는 Express가 `frontend/dist`를 같이 연다
 

@@ -68,9 +68,16 @@ npm run dev
 - 로그인할 때 그 사진이 한 번 크게 보입니다. 화면을 누르면 캘린더로 갑니다.
 - 새 사진을 올리면 예전 파일은 서버에서 지웁니다. 가족당 한 장만 남습니다.
 
+### 게시판
+
+- 하단 **게시판**은 자유게시판입니다. No · 제목 · 글쓴이 · 작성시간 · 조회수
+- 처음엔 비어 있고, **글쓰기**로 제목과 내용을 남기면 목록에 올라갑니다
+- 승인된 사람은 누구나 글을 쓰고 댓글을 달 수 있습니다
+- 글·댓글 수정/삭제는 작성자, 최종 관리자, 같은 소가족 그룹장
+
 ### 게임
 
-- `/game` 목록
+- 하단 메뉴에는 없습니다. 주소 `/game` 으로 들어가면 그대로 됩니다
 - **오목**: 15줄 기본 오목. 컴퓨터와 두거나, 1·2·3번 방에서 온 가족이 같이 둡니다
 
 ### 가족정보
@@ -94,11 +101,14 @@ npm run dev
 | `/pending` | 승인 대기 |
 | `/calendar` | 월간 캘린더 |
 | `/game` | 게임 목록 |
-| `/game/omok` | 오목 (`?mode=cpu` 또는 `?mode=pvp`) |
+| `/game/omok` | 오목 (`?mode=cpu` 또는 `?mode=pvp`). 하단 메뉴 없음 |
+| `/board` | 자유게시판 목록 |
+| `/board/new` | 글쓰기 |
+| `/board/:postId` | 글 보기 |
 | `/family-info` | 소가족 주소·차량번호 |
 | `/admin` | 가입 승인, 가족, 배경, 구성원 |
 
-아래 메뉴: 캘린더, 게임, 가족정보, (관리자만) 관리, 일정 추가
+아래 메뉴: 캘린더, 게시판, 가족정보, (관리자만) 관리, 일정 추가
 
 ## 주요 API
 
@@ -113,6 +123,8 @@ npm run dev
 - `GET /api/omok`, `POST /api/omok/cpu/start`, `POST /api/omok/cpu/act`
 - `POST /api/omok/join` `{ roomId }`, `POST /api/omok/leave|start|act`
 - `GET /api/family-info`, `PATCH /api/family-info/:id`
+- `GET /api/board`, `POST /api/board`, `GET /api/board/:id`, `PATCH /api/board/:id`, `DELETE /api/board/:id`
+- `POST /api/board/:id/comments`, `PATCH /api/board/comments/:id`, `DELETE /api/board/comments/:id`
 - `GET /api/push/vapid`, `POST /api/push/subscribe`, `POST /api/push/unsubscribe`
 - `GET /api/covers/:file` 가족 사진 파일
 - `GET /api/health`

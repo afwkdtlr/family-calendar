@@ -1249,6 +1249,194 @@ a {
   min-height: 48px;
 }
 
+.board-page {
+  gap: 10px;
+}
+
+.board-table-wrap {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+
+.board-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.board-table .col-no {
+  width: 44px;
+}
+
+.board-table .col-title {
+  width: auto;
+}
+
+.board-table .col-author {
+  width: 72px;
+}
+
+.board-table .col-when {
+  width: 96px;
+}
+
+.board-table .col-views {
+  width: 56px;
+}
+
+.board-table th,
+.board-table td {
+  padding: 11px 8px;
+  text-align: center;
+  font-size: 13px;
+  border-bottom: 1px solid var(--line);
+  vertical-align: middle;
+}
+
+.board-table th {
+  background: var(--peach-soft);
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.board-table td.is-title {
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text);
+}
+
+.board-table tr.is-row {
+  cursor: pointer;
+}
+
+.board-table tr.is-row:hover td {
+  background: var(--bg-soft);
+}
+
+.board-table-empty {
+  color: var(--muted);
+  padding: 36px 8px !important;
+}
+
+@media (max-width: 560px) {
+  .board-table .col-author {
+    width: 64px;
+  }
+
+  .board-table .col-when {
+    width: 78px;
+  }
+
+  .board-table th.col-views,
+  .board-table td.col-views,
+  .board-table col.col-views {
+    display: none;
+    width: 0;
+  }
+}
+
+.board-composer,
+.board-post {
+  display: grid;
+  gap: 10px;
+  padding: 16px;
+  border-radius: 20px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+}
+
+.board-composer input,
+.board-post input,
+.board-composer textarea,
+.board-post textarea,
+.board-comment textarea {
+  width: 100%;
+  border: 1px solid var(--line);
+  background: #fff;
+  border-radius: 14px;
+  padding: 12px;
+  outline: none;
+  resize: vertical;
+  font-size: 16px;
+}
+
+.board-detail-title {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.4;
+}
+
+.board-detail-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.board-comment-label {
+  font-size: 14px;
+}
+
+.board-post-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.board-post-body {
+  margin: 0;
+  white-space: pre-wrap;
+  line-height: 1.55;
+}
+
+.board-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.board-comments {
+  display: grid;
+  gap: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--line);
+}
+
+.board-comment {
+  display: grid;
+  gap: 6px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: var(--peach-soft);
+}
+
+.board-comment-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 6px;
+  align-items: center;
+}
+
+.board-comment-form input {
+  width: 100%;
+  border: 1px solid var(--line);
+  background: #fff;
+  border-radius: 14px;
+  padding: 10px 12px;
+  outline: none;
+  font-size: 16px;
+  min-height: 44px;
+}
+
 .dodge-wrap {
   position: relative;
   flex: 1;
@@ -1740,7 +1928,7 @@ a {
   .toast-stack {
     left: auto;
     right: 24px;
-    bottom: 24px;
+    bottom: 84px;
     width: 360px;
   }
 }
@@ -2331,9 +2519,9 @@ a {
   .calendar-page,
   .admin-page,
   .game-page,
-  .family-info-page {
+  .family-info-page,
+  .board-page {
     grid-column: 2;
-    padding-bottom: 32px;
   }
 
   .header-title {
@@ -2364,8 +2552,8 @@ a {
     transform: none;
   }
 
-  .bottom-nav {
-    display: none;
+  .calendar-shell:not(.game-shell) .bottom-nav {
+    left: 320px;
   }
 
   .calendar-cell {
@@ -2418,7 +2606,7 @@ a {
 
   .pending-page,
   .admin-page {
-    padding: 24px 16px 40px;
+    padding: 24px 16px 96px;
   }
 }
 

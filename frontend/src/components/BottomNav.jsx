@@ -7,9 +7,9 @@ export function BottomNav({ isAdmin, onAdd }) {
         <span className="nav-icon">📅</span>
         캘린더
       </NavLink>
-      <NavLink to="/game" className={({ isActive }) => `nav-item ${isActive ? "active" : ""}`}>
-        <span className="nav-icon">🎮</span>
-        게임
+      <NavLink to="/board" className={({ isActive }) => `nav-item ${isActive ? "active" : ""}`}>
+        <span className="nav-icon">📝</span>
+        게시판
       </NavLink>
       <NavLink to="/family-info" className={({ isActive }) => `nav-item ${isActive ? "active" : ""}`}>
         <span className="nav-icon">🏠</span>
